@@ -1,8 +1,24 @@
-tasks = []
+import json
+import os
+
+FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks.json")
+
+def load_tasks():
+    if os.path.exists(FILE):
+        with open(FILE, "r") as f:
+            return json.load(f)
+    return []
+
+def save_tasks(tasks):
+    with open(FILE, "w") as f:
+        json.dump(tasks, f, indent=2)
+
+tasks = load_tasks()
 
 def add_task(title):
     task = {"title": title, "done": False}
     tasks.append(task)
+    save_tasks(tasks)
     print(f"Task added: {title}")
 
 def list_tasks():
@@ -19,6 +35,7 @@ def complete_task(number):
         print("Invalid task number.")
         return
     tasks[index]["done"] = True
+    save_tasks(tasks)
     print(f"Task marked as done: {tasks[index]['title']}")
 
 def delete_task(number):
@@ -27,6 +44,7 @@ def delete_task(number):
         print("Invalid task number.")
         return
     removed = tasks.pop(index)
+    save_tasks(tasks)
     print(f"Task deleted: {removed['title']}")
 
 def menu():
